@@ -7,9 +7,9 @@ FILE_CATEGORY_MAP = {'mp3': 'mp3', 'flac': 'lossless', 'wav': 'lossless'}
 class MusicMachine(object):
     def __init__(self):
 
-        relative_path = os.path.dirname(os.path.abspath(__file__))
-        self.input_dir = '{}/test_data/input'.format(relative_path)
-        self.output_dir = '{}/test_data/output'.format(relative_path)
+        abs_path = os.path.dirname(os.path.abspath(__file__))
+        self.input_dir = '{}/test_data/input'.format(abs_path)
+        self.output_dir = '{}/test_data/output'.format(abs_path)
 
     def prompt(self):
         print('1: Change input directory.')
@@ -66,15 +66,26 @@ class MusicMachine(object):
             file_extension = filename.split('.').pop().lower()
             category = FILE_CATEGORY_MAP.get(file_extension)
             if category:
-                category_dir = '{}/{}'.format(self.output_dir, category)
-                #todo: create subdirs recursively
-                if not os.path.isdir(category_dir):
-                    os.makedirs(category_dir)
-                copy2('{}{}'.format(self.input_dir, relative_path), '{}/{}{}'.format(self.output_dir, category, norm_path))
+                file_from = '{}{}'.format(self.input_dir, relative_path)
+                file_to = '{}/{}{}'.format(self.output_dir, category, norm_path)
+                self.create_output_dirs(file_to)
+                copy2(file_from, file_to)
             #todo: check whether file exists already
 
     def normalize_pathnames(self, pathname):
         return pathname.replace(" ", "_")
+
+    def create_output_dirs(self, file_to):
+        artist_album_folders = file_to.replace(self.output_dir, '').split('/')
+        artist_album_folders.pop()
+        root = self.output_dir
+        for folder in artist_album_folders:
+            path = '{}/{}'.format(root, folder)
+            if os.path.isdir(path):
+                pass
+            else:
+                os.mkdir(path)
+            root = path
 
 music_machine = MusicMachine()
 music_machine.prompt()
