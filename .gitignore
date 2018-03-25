@@ -5,3 +5,4 @@ __pycache__/
 [._]s[a-w][a-z]
 *.un~
 *~
+test_data/output
