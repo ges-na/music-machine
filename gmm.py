@@ -1,3 +1,4 @@
+import ipdb
 import os
 from shutil import copy2
 
@@ -8,12 +9,13 @@ class MusicMachine(object):
     def __init__(self):
 
         abs_path = os.path.dirname(os.path.abspath(__file__))
-        self.input_dir = '{}/test_data/input'.format(abs_path)
-        self.output_dir = '{}/test_data/output'.format(abs_path)
+        self.input_dir = os.path.join(abs_path, 'test_data', 'input')
+        self.output_dir = os.path.join(abs_path, 'test_data', 'output')
 
     def prompt(self):
         print('1: Change input directory.')
         print('2: Change output directory.')
+        #todo: step 3
         print('3: See state.')
         print('4: Do the thing.')
         decision = input('What do you want to do? ')
@@ -53,21 +55,22 @@ class MusicMachine(object):
         """compares input and output dirs
         copies files not present in output from input"""
         for root, dirs, files in os.walk(self.input_dir):
-            trunc_root = root.replace(self.input_dir, "")
-            split_trunc_root = trunc_root.split("/")
+            ##input_dir_appended = 
+            trunc_root = root.replace(self.input_dir + "\\", "")
+            split_trunc_root = trunc_root.split("\\")
             array_length = len(split_trunc_root)
-            if array_length == 3:
+            if array_length == 2:
                 self.copy_album(files, trunc_root)
 
     def copy_album(self, songs, path):
         for filename in songs:
-            relative_path = '{}/{}'.format(path, filename)
+            relative_path = os.path.join(path, filename)
             norm_path = self.normalize_pathnames(relative_path)
             file_extension = filename.split('.').pop().lower()
             category = FILE_CATEGORY_MAP.get(file_extension)
             if category:
-                file_from = '{}{}'.format(self.input_dir, relative_path)
-                file_to = '{}/{}{}'.format(self.output_dir, category, norm_path)
+                file_from = os.path.join(self.input_dir, relative_path)
+                file_to = os.path.join(self.output_dir, category, norm_path)
                 self.create_output_dirs(file_to)
                 copy2(file_from, file_to)
             #todo: check whether file exists already
@@ -76,11 +79,11 @@ class MusicMachine(object):
         return pathname.replace(" ", "_")
 
     def create_output_dirs(self, file_to):
-        artist_album_folders = file_to.replace(self.output_dir, '').split('/')
+        artist_album_folders = file_to.replace(self.output_dir, '').split('\\')
         artist_album_folders.pop()
         root = self.output_dir
         for folder in artist_album_folders:
-            path = '{}/{}'.format(root, folder)
+            path = os.path.join(root, folder)
             if os.path.isdir(path):
                 pass
             else:
