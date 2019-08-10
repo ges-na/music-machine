@@ -1,0 +1,9 @@
+{% extends 'basepage.html' %}
+  {% block content %}
+  <h1>{{ band.name }} - {{ album.name }}</h1>
+    <ul>
+      {% for song in album %}
+      <li>{{ song.name }}</li>
+      {% endfor %}
+    </ul>
+  {% endblock %}

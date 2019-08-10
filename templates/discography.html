@@ -1,0 +1,9 @@
+{% extends 'basepage.html' %}
+  {% block content %}
+    <h1>{{ band.name }}</h1>
+    <ul>
+      {% for album in band.albums_ordered %}
+      <li><a href ='/{{ band.id }}/{{ album.id }}'>{{ album.name }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endblock %}
