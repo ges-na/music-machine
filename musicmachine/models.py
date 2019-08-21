@@ -32,6 +32,7 @@ class Album(db.Model):
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), unique=True, nullable=False)
+    path = db.Column(db.String(1000), unique=True, nullable=False)
     album_id = db.Column(db.Integer, db.ForeignKey('album.id'),
         nullable=True)
     album = db.relationship('Album',
